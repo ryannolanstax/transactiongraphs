@@ -122,9 +122,62 @@ chart2 = alt.Chart(newdf4).mark_boxplot(extent='min-max').encode(
 )
 
 
+#chart3 = alt.Chart(newdf4).mark_bar().encode(
+#    x='int_created_date:O',
+#    y='total:Q'
+#)
 
 
-tab1, tab2, tab3 = st.tabs(["Histogram", "Box and Whiskers", "Coming Soon"])
+#Need to work on grouping and such
+
+
+#Mean with months would be interesting visual
+#https://altair-viz.github.io/gallery/bar_chart_with_mean_line.html
+
+
+
+boxplot1 = newdf4.groupby('int_created_date')['total'].sum()
+chart3_data = pd.DataFrame({'int_created_date': boxplot1.index, 'total': boxplot1.values})
+
+bar3 = alt.Chart(chart3_data).mark_bar().encode(
+    x='int_created_date:O',
+    y='total:Q'
+)
+
+rule3 = alt.Chart(chart3_data).mark_rule(color='red').encode(
+    y='mean(total):Q'
+)
+
+chart3 = (bar3 + rule3).properties(width=600)
+
+
+boxplot2 = newdf4.groupby('int_created_date')['total'].count()
+chart4_data = pd.DataFrame({'int_created_date': boxplot2.index, 'total': boxplot2.values})
+
+bar4 = alt.Chart(chart4_data).mark_bar().encode(
+    x='int_created_date:O',
+    y='total:Q'
+)
+
+rule4 = alt.Chart(chart4_data).mark_rule(color='red').encode(
+    y='mean(total):Q'
+)
+
+chart4 = (bar4 + rule4).properties(width=600)
+
+#MAYBE? It's by card type
+#chart3 = alt.Chart(newdf4).mark_bar(opacity=0.7).encode(
+#    x='int_created_date:O',
+#    y=alt.Y('total:Q').stack(None),
+#    color="payment_card_type",
+#)
+
+
+
+#Plot with Counts
+#plot with Totals
+
+tab1, tab2, tab3, tab4 = st.tabs(["Histogram", "Box and Whiskers", "Box Plot Sum", "Box Plot Count"])
 
 
 
@@ -133,9 +186,10 @@ with tab1:
     st.altair_chart(chart1, use_container_width=True)
 with tab2:
     st.altair_chart(chart2, use_container_width=True)
-#with tab3:
- #   st.altair_chart(chart3, use_container_width=True)
-
+with tab3:
+    st.altair_chart(chart3, use_container_width=True)
+with tab4:
+    st.altair_chart(chart4, use_container_width=True)
 
 
 #https://altair-viz.github.io/gallery/bar_with_rolling_mean.html 
