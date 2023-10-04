@@ -148,7 +148,14 @@ rule3 = alt.Chart(chart3_data).mark_rule(color='red').encode(
     y='mean(total):Q'
 )
 
-chart3 = (bar3 + rule3).properties(width=600)
+chart3 = (bar3 + rule3).properties(width=600).properties(
+    title={
+      "text": ["Box Plot Mean Transaction Per Month"], 
+      "subtitle": [f"Payment Option: {PaymentOption}", f"Payment Card: {PaymentCard}", f"Payment Status: {PaymentStatus}",  f"Start Date: {StartDate}", f"End Date: {EndDate}",],
+    },
+    width=800,
+    height=500
+)
 
 
 boxplot2 = newdf4.groupby('int_created_date')['total'].count()
@@ -163,7 +170,14 @@ rule4 = alt.Chart(chart4_data).mark_rule(color='red').encode(
     y='mean(total):Q'
 )
 
-chart4 = (bar4 + rule4).properties(width=600)
+chart4 = (bar4 + rule4).properties(width=600).properties(
+    title={
+      "text": ["Box Plot Transaction Count Per Month"], 
+      "subtitle": [f"Payment Option: {PaymentOption}", f"Payment Card: {PaymentCard}", f"Payment Status: {PaymentStatus}",  f"Start Date: {StartDate}", f"End Date: {EndDate}",],
+    },
+    width=800,
+    height=500
+)
 
 #MAYBE? It's by card type
 #chart3 = alt.Chart(newdf4).mark_bar(opacity=0.7).encode(
