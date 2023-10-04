@@ -136,37 +136,41 @@ chart2 = alt.Chart(newdf4).mark_boxplot(extent='min-max').encode(
 
 
 
-boxplot1 = newdf4.groupby('int_created_date')['total'].sum()
-chart3_data = pd.DataFrame({'int_created_date': boxplot1.index, 'total': boxplot1.values})
+#cards/bank filter needed
 
-bar3 = alt.Chart(chart3_data).mark_bar().encode(
-    x='int_created_date:O',
-    y='total:Q'
+#payment_card_type
+#payment_method
+
+boxplot1 = newdf4.groupby(['int_created_date', 'type', 'payment_card_type', 'payment_method'])['total'].sum().reset_index()
+
+bar3 = alt.Chart(boxplot1).mark_bar().encode(
+    x=alt.X('int_created_date:O', title='Date'),
+    y=alt.Y('sum(total):Q', title='Total'),
+    color=alt.Color('type:N', title='Payment Type')
 )
 
-rule3 = alt.Chart(chart3_data).mark_rule(color='red').encode(
-    y='mean(total):Q'
+rule3 = alt.Chart(boxplot1).mark_rule(color='red').encode(
+    y=alt.Y('mean(total):Q', title='Mean Total')
 )
 
-chart3 = (bar3 + rule3).properties(width=600).properties(
+chart3 = (bar3 + rule3).properties(
     title={
-      "text": ["Box Plot Mean Transaction Per Month"], 
-      "subtitle": [f"Payment Option: {PaymentOption}", f"Payment Card: {PaymentCard}", f"Payment Status: {PaymentStatus}",  f"Start Date: {StartDate}", f"End Date: {EndDate}",],
+        "text": ["Box Plot Mean Transaction Per Month"], 
+        "subtitle": [f"Payment Option: {PaymentOption}", f"Payment Card: {PaymentCard}", f"Payment Status: {PaymentStatus}", f"Start Date: {StartDate}", f"End Date: {EndDate}"],
     },
     width=800,
     height=500
 )
 
+boxplot2 = newdf4.groupby(['int_created_date', 'type', 'payment_card_type', 'payment_method'])['total'].count().reset_index()
 
-boxplot2 = newdf4.groupby('int_created_date')['total'].count()
-chart4_data = pd.DataFrame({'int_created_date': boxplot2.index, 'total': boxplot2.values})
-
-bar4 = alt.Chart(chart4_data).mark_bar().encode(
-    x='int_created_date:O',
-    y='total:Q'
+bar4 = alt.Chart(boxplot2).mark_bar().encode(
+    x=alt.X('int_created_date:O', title='Date'),
+    y=alt.Y('total:Q', title='Total'),
+    color=alt.Color('type:N', title='Payment Type')
 )
 
-rule4 = alt.Chart(chart4_data).mark_rule(color='red').encode(
+rule4 = alt.Chart(boxplot2).mark_rule(color='red').encode(
     y='mean(total):Q'
 )
 
@@ -192,8 +196,6 @@ chart4 = (bar4 + rule4).properties(width=600).properties(
 #plot with Totals
 
 tab1, tab2, tab3, tab4 = st.tabs(["Histogram", "Box and Whiskers", "Box Plot Sum", "Box Plot Count"])
-
-
 
 
 with tab1:
